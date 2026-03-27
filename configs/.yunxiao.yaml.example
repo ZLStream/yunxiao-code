@@ -1,0 +1,4 @@
+# 云效合并请求 CLI 配置示例
+domain: openapi-rdc.aliyuncs.com
+organization_id: ""
+token: ""

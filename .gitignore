@@ -1,0 +1,25 @@
+# macOS
+.DS_Store
+
+# Binary
+bin/
+
+# IDE
+.idea/
+
+# Node
+node_modules/
+
+# LOG
+.playwright-mcp
+
+# GS D
+.planning
+
+# 敏感配置文件
+.yunxiao.yaml
+.yunxiao-code/
+*.env
+*.env.*
+
+/yx-code
