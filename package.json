@@ -1,6 +1,6 @@
 {
   "name": "yunxiao-code",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "阿里云云效 CLI 工具",
   "keywords": [
     "aliyun",
@@ -11,6 +11,14 @@
     "git",
     "代码"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZLStream/yunxiao-code.git"
+  },
+  "homepage": "https://github.com/ZLStream/yunxiao-code#readme",
+  "bugs": {
+    "url": "https://github.com/ZLStream/yunxiao-code/issues"
+  },
   "bin": {
     "yx-code": "bin/yx-code.js"
   },
