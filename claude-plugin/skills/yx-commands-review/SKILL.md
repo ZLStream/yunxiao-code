@@ -1,7 +1,7 @@
 ---
+name: yx-commands-review
 allowed-tools: Bash(yx-code diff:*), Bash(yx-code --help:*), Bash(git branch:*), Bash(git remote:*), Bash(git log:*), Bash(git show:*), Bash(git blame:*), Read, Grep, Glob
 description: 查看分支代码差异并进行代码审查
-disable-model-invocation: false
 ---
 
 ## Context
