@@ -12,21 +12,21 @@ import (
 )
 
 type CreateMRRequest struct {
-	SourceBranch   string `json:"sourceBranch"`
-	TargetBranch   string `json:"targetBranch"`
+	SourceBranch    string `json:"sourceBranch"`
+	TargetBranch    string `json:"targetBranch"`
 	SourceProjectId int64  `json:"sourceProjectId"`
 	TargetProjectId int64  `json:"targetProjectId"`
-	Title          string `json:"title"`
-	Description    string `json:"description,omitempty"`
+	Title           string `json:"title"`
+	Description     string `json:"description,omitempty"`
 }
 
 type CreateMRResponse struct {
-	LocalId          int64  `json:"localId"`
-	DetailUrl        string `json:"detailUrl"`
-	WebUrl           string `json:"webUrl"`
-	Title            string `json:"title"`
-	SourceBranch     string `json:"sourceBranch"`
-	TargetBranch     string `json:"targetBranch"`
+	LocalId      int64  `json:"localId"`
+	DetailUrl    string `json:"detailUrl"`
+	WebUrl       string `json:"webUrl"`
+	Title        string `json:"title"`
+	SourceBranch string `json:"sourceBranch"`
+	TargetBranch string `json:"targetBranch"`
 	// status 字段在成功时是字符串，在错误时是布尔值，使用 interface{} 兼容
 	Status           interface{} `json:"status"`
 	Code             int         `json:"code"`
@@ -41,11 +41,37 @@ type RepoInfo struct {
 	Name string `json:"name"`
 }
 
+// DiffFile 表示单个文件的 diff 信息
+type DiffFile struct {
+	Diff        string `json:"diff"`
+	NewPath     string `json:"newPath"`
+	OldPath     string `json:"oldPath"`
+	NewFile     bool   `json:"newFile"`
+	DeletedFile bool   `json:"deletedFile"`
+	AddLines    int    `json:"addLines"`
+	DelLines    int    `json:"delLines"`
+}
+
+// CommitInfo 表示提交信息
+type CommitInfo struct {
+	Id         string `json:"id"`
+	ShortId    string `json:"shortId"`
+	Title      string `json:"title"`
+	Message    string `json:"message"`
+	AuthorName string `json:"authorName"`
+}
+
+// CompareResponse 表示代码比较的响应
+type CompareResponse struct {
+	Commits []CommitInfo `json:"commits"`
+	Diffs   []DiffFile   `json:"diffs"`
+}
+
 func GetProjectId(cfg *config.Config, repoName string) (int64, error) {
-	url := fmt.Sprintf("https://%s/oapi/v1/codeup/organizations/%s/repositories?search=%s",
+	apiURL := fmt.Sprintf("https://%s/oapi/v1/codeup/organizations/%s/repositories?search=%s",
 		cfg.Domain, cfg.OrganizationId, repoName)
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", apiURL, nil)
 	if err != nil {
 		return 0, fmt.Errorf("创建请求失败: %w", err)
 	}
@@ -81,12 +107,12 @@ func CreateMergeRequest(cfg *config.Config, repositoryId int64, sourceBranch str
 		cfg.Domain, cfg.OrganizationId, repositoryId)
 
 	reqBody := CreateMRRequest{
-		SourceBranch:   sourceBranch,
-		TargetBranch:   targetBranch,
+		SourceBranch:    sourceBranch,
+		TargetBranch:    targetBranch,
 		SourceProjectId: repositoryId,
 		TargetProjectId: repositoryId,
-		Title:          title,
-		Description:    description,
+		Title:           title,
+		Description:     description,
 	}
 
 	jsonData, err := json.Marshal(reqBody)
@@ -117,7 +143,6 @@ func CreateMergeRequest(cfg *config.Config, repositoryId int64, sourceBranch str
 		return nil, fmt.Errorf("解析响应失败: %w\n响应: %s", err, string(body))
 	}
 
-	// 使用 HTTP 状态码判断成功/失败
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		errMsg := result.ErrorDescription
 		if errMsg == "" {
@@ -130,32 +155,6 @@ func CreateMergeRequest(cfg *config.Config, repositoryId int64, sourceBranch str
 	}
 
 	return &result, nil
-}
-
-// DiffFile 表示单个文件的 diff 信息
-type DiffFile struct {
-	Diff        string `json:"diff"`
-	NewPath     string `json:"newPath"`
-	OldPath     string `json:"oldPath"`
-	NewFile     bool   `json:"newFile"`
-	DeletedFile bool   `json:"deletedFile"`
-	AddLines    int    `json:"addLines"`
-	DelLines    int    `json:"delLines"`
-}
-
-// CommitInfo 表示提交信息
-type CommitInfo struct {
-	Id        string `json:"id"`
-	ShortId   string `json:"shortId"`
-	Title     string `json:"title"`
-	Message   string `json:"message"`
-	AuthorName string `json:"authorName"`
-}
-
-// CompareResponse 表示代码比较的响应
-type CompareResponse struct {
-	Commits []CommitInfo `json:"commits"`
-	Diffs   []DiffFile   `json:"diffs"`
 }
 
 // GetCompare 获取两个分支之间的代码差异

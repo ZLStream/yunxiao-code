@@ -71,7 +71,7 @@ function deployPlugin() {
     linked.forEach(name => console.log('   - ' + name));
   }
 
-  console.log('\n可用命令: /yx-commands-commit, /yx-commands-push, /yx-commands-mr, /yx-commands-review, /yx-commands-commit-push-mr\n');
+  console.log('\n可用命令: /yx-commands-commit, /yx-commands-push, /yx-commands-mr, /yx-commands-review, /yx-commands-commit-push-mr, /yx-commands-workitems, /yx-commands-summary\n');
 }
 
 console.log('\n✅ yx-code CLI installed successfully!\n');
@@ -81,7 +81,9 @@ console.log('  yx-code clone    - 克隆仓库');
 console.log('  yx-code commit   - 提交代码');
 console.log('  yx-code push     - 推送代码');
 console.log('  yx-code mr       - 创建合并请求');
-console.log('  yx-code diff     - 查看代码差异\n');
+console.log('  yx-code diff     - 查看代码差异');
+console.log('  yx-code workitems - 列出工作项');
+console.log('  yx-code summary  - 生成工作总结\n');
 
 try {
   deployPlugin();

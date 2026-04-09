@@ -40,8 +40,8 @@ func loadAndOverrideConfig(cmd *cobra.Command) (*config.Config, error) {
 func main() {
 	rootCmd := &cobra.Command{
 		Use:   "yx-code",
-		Short: "云效合并请求 CLI 工具",
-		Long:  "提交代码并自动向阿里云云效创建合并请求（目标分支: develop）",
+		Short: "云效 CLI 工具",
+		Long:  "阿里云云效 CLI 工具，支持代码提交、合并请求、工作项管理和工作总结\n配置文件: ~/.yunxiao/config.yaml",
 	}
 
 	rootCmd.PersistentFlags().String("domain", "", "云效域名")
@@ -227,6 +227,12 @@ func main() {
 	diffCmd.Flags().StringVarP(&diffTargetBranch, "target", "t", "", "目标分支（默认: develop）")
 	diffCmd.Flags().StringVarP(&diffSourceBranch, "source", "s", "", "源分支（默认: 当前分支）")
 	rootCmd.AddCommand(diffCmd)
+
+	// workitems 子命令
+	rootCmd.AddCommand(newWorkitemsCmd())
+
+	// summary 子命令
+	rootCmd.AddCommand(newSummaryCmd())
 
 	// init 子命令
 	initCmd := &cobra.Command{
