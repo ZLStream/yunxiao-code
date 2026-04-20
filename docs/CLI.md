@@ -297,6 +297,117 @@ yx-code diff --org your-org-id --token your-token
 
 ---
 
+### yx-code workitems
+
+列出当前用户负责的工作项（需求、任务、缺陷）。
+
+```bash
+yx-code workitems [flags]
+```
+
+**命令参数**
+
+| 参数 | 简写 | 必填 | 说明 |
+|------|------|------|------|
+| `--status` | `-s` | 否 | 状态过滤：`undone`（排除已完成）/ `all` / 中文状态名（如：开发中），默认 `undone` |
+| `--project` | `-p` | 否 | 指定项目标识符或名称，默认查询所有项目 |
+| `--json` | | 否 | 以 JSON 格式输出 |
+
+**全局参数**
+
+| 参数 | 简写 | 必填 | 说明 |
+|------|------|------|------|
+| `--domain` | | 否 | 云效 API 域名，默认从配置文件读取 |
+| `--org` | | 否 | 组织 ID，默认从配置文件读取 |
+| `--token` | | 否 | 个人访问令牌，默认从配置文件读取 |
+
+**示例**
+
+```bash
+# 列出我负责的未完成工作项（默认）
+yx-code workitems
+
+# 列出所有状态的工作项
+yx-code workitems --status all
+
+# 列出指定状态的工作项
+yx-code workitems --status 开发中
+
+# 指定项目
+yx-code workitems --project my-project
+
+# JSON 格式输出（供 AI 整理展示）
+yx-code workitems --json
+```
+
+**行为说明**
+
+- 自动获取当前登录用户 ID，查询其负责的工作项
+- 按需求、任务、缺陷三类分组展示
+- 用户 ID 首次运行时通过 token 自动获取并缓存
+
+---
+
+### yx-code summary
+
+生成指定时间范围内的工作项总结（需求、任务、缺陷），适合撰写周报、月报或绩效总结。
+
+```bash
+yx-code summary [flags]
+```
+
+**命令参数**
+
+| 参数 | 简写 | 必填 | 说明 |
+|------|------|------|------|
+| `--period` | `-p` | 否 | 时间周期：`week` / `month` / `quarter` / `year`，与 `--start`/`--end` 二选一 |
+| `--start` | | 否 | 开始日期，格式：`YYYY-MM-DD` |
+| `--end` | | 否 | 结束日期，格式：`YYYY-MM-DD`，默认今天 |
+| `--status` | `-s` | 否 | 状态过滤：`all`（默认）/ `undone`（排除已完成）/ 中文状态名 |
+| `--json` | | 否 | 以 JSON 格式输出（AI 友好） |
+
+**全局参数**
+
+| 参数 | 简写 | 必填 | 说明 |
+|------|------|------|------|
+| `--domain` | | 否 | 云效 API 域名，默认从配置文件读取 |
+| `--org` | | 否 | 组织 ID，默认从配置文件读取 |
+| `--token` | | 否 | 个人访问令牌，默认从配置文件读取 |
+
+**示例**
+
+```bash
+# 交互式选择时间范围
+yx-code summary
+
+# 本周总结
+yx-code summary --period week
+
+# 本月总结
+yx-code summary --period month
+
+# 本季度总结
+yx-code summary --period quarter
+
+# 自定义时间范围
+yx-code summary --start 2024-01-01 --end 2024-03-31
+
+# 只统计未完成工作项
+yx-code summary --period month --status undone
+
+# JSON 格式输出（供 AI 整理展示）
+yx-code summary --period month --json
+```
+
+**行为说明**
+
+- 未指定时间参数时，交互式提示选择时间范围（本周/本月/本季度/本年/自定义）
+- 时间范围按工作项**更新时间**筛选，能捕获到在该时间段内有实际进展的工作项（而非仅限于该时间段内创建的）
+- 按需求、任务、缺陷三类分组展示，并附按项目汇总
+- 用户 ID 首次运行时通过 token 自动获取并缓存
+
+---
+
 ## 全局参数
 
 所有子命令支持以下全局参数，用于覆盖配置文件：
@@ -340,6 +451,25 @@ yx-code mr -m "添加用户登录功能"
 # 7. 查看代码差异（可选，创建 MR 后会提示）
 # 或单独运行
 yx-code diff
+```
+
+### 查看工作项与生成总结
+
+```bash
+# 查看当前负责的未完成工作项
+yx-code workitems
+
+# 查看指定状态的工作项
+yx-code workitems --status 开发中
+
+# 生成本月工作总结
+yx-code summary --period month
+
+# 生成本周工作总结（JSON 格式，供 AI 进一步整理）
+yx-code summary --period week --json
+
+# 生成自定义时间段总结
+yx-code summary --start 2024-03-01 --end 2024-03-31 --json
 ```
 
 ---

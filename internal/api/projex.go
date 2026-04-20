@@ -225,7 +225,7 @@ func SearchWorkitems(cfg *config.Config, spaceId, category, conditions string) (
 			Conditions: conditions,
 			SpaceId:    spaceId,
 			SpaceType:  "Project",
-			OrderBy:    "gmtCreate",
+			OrderBy:    "gmtModified",
 			Sort:       "desc",
 			Page:       page,
 			PerPage:    perPage,

@@ -57,9 +57,10 @@ func newSummaryCmd() *cobra.Command {
 
 			fmt.Printf("共 %d 个项目，正在获取工作项...\n", len(projects))
 
-			// 构建时间范围条件（毫秒时间戳）
-			dateRangeJSON := fmt.Sprintf(`"%d","%d"`, start.UnixMilli(), end.UnixMilli())
-			conditions := buildWorkitemConditions(cfg.UserId, dateRangeJSON)
+			// 构建时间范围条件（云效 API 要求日期字符串格式 + toValue）
+			conditions := buildWorkitemConditions(cfg.UserId,
+				start.Format("2006-01-02 15:04:05"),
+				end.Format("2006-01-02 15:04:05"))
 
 			// 收集所有工作项
 			var allItems []api.Workitem

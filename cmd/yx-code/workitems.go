@@ -80,7 +80,7 @@ func newWorkitemsCmd() *cobra.Command {
 				projects = filtered
 			}
 
-			conditions := buildWorkitemConditions(cfg.UserId, "")
+			conditions := buildWorkitemConditions(cfg.UserId, "", "")
 
 			var allItems []api.Workitem
 			for _, proj := range projects {
@@ -119,15 +119,15 @@ func fetchUserProjects(cfg *config.Config) ([]api.Project, error) {
 }
 
 // buildWorkitemConditions 构建工作项查询条件 JSON（始终按 assignedTo 过滤）
-func buildWorkitemConditions(userId, dateRange string) string {
+func buildWorkitemConditions(userId, startDate, endDate string) string {
 	var conditions []string
 
 	conditions = append(conditions, fmt.Sprintf(
 		`{"fieldIdentifier":"assignedTo","operator":"CONTAINS","value":["%s"],"className":"user","format":"list"}`, userId))
 
-	if dateRange != "" {
+	if startDate != "" && endDate != "" {
 		conditions = append(conditions, fmt.Sprintf(
-			`{"fieldIdentifier":"gmtCreate","operator":"BETWEEN","value":[%s],"className":"dateTime","format":"input"}`, dateRange))
+			`{"fieldIdentifier":"gmtModified","operator":"BETWEEN","value":["%s"],"toValue":"%s","className":"dateTime","format":"input"}`, startDate, endDate))
 	}
 
 	condJSON := strings.Join(conditions, ",")
